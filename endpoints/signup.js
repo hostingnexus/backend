@@ -1,5 +1,5 @@
 const db = require("../database");
-const {app} = require("../shared");
+const {getPteroApp} = require("../shared");
 const bcrypt = require("bcrypt");
 
 async function signup(req, res) {
@@ -38,11 +38,12 @@ async function signup(req, res) {
             });
         } else {
             // Continue with registration
-            app.users.create({
+            getPteroApp().users.create({
                 email: email,
                 username: username + Math.floor(Math.random() * 1000),
                 firstname: "Change this",
-                lastname: "Change this"
+                lastname: "Change this",
+                password: password
             }).then(async (u) => {
                 const hashed = await bcrypt.hash(password, 10);
                 await db.query("INSERT INTO accounts (created_at, email, username, password, ptero_account_id) VALUES (?, ?, ?, ?, ?)", [new Date().toISOString().split("T")[0], email, username, hashed, u.id]);

@@ -45,6 +45,7 @@ async function eggInfo(egg) {
     return {docker: e.dockerImage, startup: e.startup};
 }
 
+
 async function getServers(owner_id) {
     const servers = await db.query("SELECT * FROM servers WHERE owner_id = ?", [owner_id]);
     const data = servers[0];
@@ -52,7 +53,11 @@ async function getServers(owner_id) {
     const responding = [];
     for(const server of data) {
         console.warn(server);
-        const s = await client.servers.fetchResources(server.ptero_string_id); // currentState
+        try {
+            s = await client.servers.fetchResources(server.ptero_string_id); 
+        } catch (error) {
+            s = { currentState: "unknown" };
+        }
         const v = await app.servers.fetch(server.id);
         responding.push({
             id: server.id,
@@ -126,7 +131,7 @@ async function createServer(email, plan) {
 
     });
 
-    await db.query("INSERT INTO servers (created_at, id, ptero_string_id, owner_id, game, egg, plan_id) VALUES (?, ?, ?, ?, ?, ?)", [new Date().toISOString().split("T")[0], server.id, server.identifier, u.id, plan.game, numericalEgg.egg, plan.id]);
+    await db.query("INSERT INTO servers (created_at, id, ptero_string_id, owner_id, game, egg, plan_id) VALUES (?, ?, ?, ?, ?, ?, ?)", [new Date().toISOString().split("T")[0], server.id, server.identifier, u.id, plan.game, numericalEgg.egg, plan.id]);
 }
 
 module.exports = { getPteroApp, getSession, createSession, stripe, findPlanData, createServer, getServers, reinstall, changeEgg };

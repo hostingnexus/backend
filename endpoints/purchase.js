@@ -81,7 +81,7 @@ async function success(req, res) {
         await createServer(customer, plan);
 
         // Redirect
-        res.redirect(process.env.PANEL_URL);
+        res.redirect("https://hostnexus.cloud/dashboard.html");
     } else {
         return res.status(400).json({
             success: false,
