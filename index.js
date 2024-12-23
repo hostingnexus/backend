@@ -28,8 +28,29 @@ app.get("/plans", (req, res) => {
     return require("./endpoints/plans").plans(req, res);
 });
 
+app.get("/servers", async (req, res) => {
+    return require("./endpoints/servers").servers(req, res);
+});
+
 app.post("/verify", async (req, res) => {
     return require("./endpoints/verify").verify(req, res);
+});
+
+app.post("/purchase", async (req, res) => {
+    return require("./endpoints/purchase").purchase(req, res);
+});
+
+app.post("/reinstall", async (req, res) => {
+    return require("./endpoints/reinstall").reinstalll(req, res);
+});
+
+app.post("/changeegg", async (req, res) => {
+    return require("./endpoints/changeegg").changeegg(req, res);
+});
+
+
+app.get("/success", async (req, res) => {
+    return require("./endpoints/purchase").success(req, res);
 });
 
 app.listen(3000, () => {

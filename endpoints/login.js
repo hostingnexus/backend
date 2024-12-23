@@ -24,6 +24,7 @@ async function login(req, res) {
     }
 
     const user = result[0];
+    console.log(password, user);
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
         return res.status(401).json({
@@ -32,7 +33,7 @@ async function login(req, res) {
         });
     }
 
-    const key = createSession(email, user.username);
+    const key = createSession(email, user.username, user.id);
     return res.status(200).json({
         success: true,
         session: key
