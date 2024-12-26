@@ -58,18 +58,22 @@ async function getServers(owner_id) {
         } catch (error) {
             s = { currentState: "unknown" };
         }
-        const v = await app.servers.fetch(server.id);
-        responding.push({
-            id: server.id,
-            string_id: server.ptero_string_id,
-            game: server.game,
-            cpu: (v.limits.cpu === 0 ? "unmetered" : `${v.limits.cpu}%`),
-            memory: (v.limits.memory / 1024).toFixed(2),
-            egg: server.egg,
-            possible: possibleNestAndEggs(server.game),
-            state: s.currentState,
-        })
-        console.log(s);
+
+        try {
+            const v = await app.servers.fetch(server.id);
+            responding.push({
+                id: server.id,
+                string_id: server.ptero_string_id,
+                game: server.game,
+                cpu: (v.limits.cpu === 0 ? "unmetered" : `${v.limits.cpu}%`),
+                memory: (v.limits.memory / 1024).toFixed(2),
+                egg: server.egg,
+                possible: possibleNestAndEggs(server.game),
+                state: s.currentState,
+            })
+        } catch(error) {
+            // Server not found, ignore
+        }
     }
 
     return responding;

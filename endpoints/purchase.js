@@ -3,11 +3,17 @@ require("dotenv").config();
 
 async function purchase(req, res) {
     const {
-        token,
         plan_id
     } = req.body;
 
-    if(!token || !plan_id) {
+    const token = req.headers.authorization;
+    if(!token) {
+        return res.status(401).json({
+            error: "Unauthorized"
+        });
+    }
+
+    if(!plan_id) {
         return res.status(400).json({
             success: false,
             error: "Invalid payload (missing data)"

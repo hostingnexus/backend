@@ -1,7 +1,13 @@
 const express = require("express");
+const expressRateLimit = require("express-rate-limit");
 const app = express();
 const db = require("./database");
 const cors = require("cors");
+
+const limiter = expressRateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5
+});
 
 app.use(cors());
 app.use(express.json());
@@ -12,7 +18,7 @@ app.get("/status", (req, res) => {
     })
 });
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", limiter, async (req, res) => {
     return require ("./endpoints/signup").signup(req, res);
 });
 

@@ -15,14 +15,23 @@ async function signup(req, res) {
     if(password.length < 8 || username.length < 3 || username.length > 30) {
         return res.status(400).json({
             success: false,
-            error: "Invalid payload (password, username)"
+            error: "Either username or password is too short, or username is too long"
         });
     }
 
-    if(email.length > 100 || !email.includes("@") || !email.includes(".")) {
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    if(username.includes(" ") || !usernameRegex.test(username)) {
         return res.status(400).json({
             success: false,
-            error: "Invalid payload (email)"
+            error: "Username cannot contain spaces or special characters"
+        });
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if(!emailRegex.test(email) || email.length > 254) {
+        return res.status(400).json({
+            success: false,
+            error: "Incorrect email format"
         });
     }
 
@@ -34,7 +43,7 @@ async function signup(req, res) {
         if(result.length > 0) {
             return res.status(409).json({
                 success: false,
-                error: "User already exists"
+                error: "An account with this email already exists"
             });
         } else {
             // Continue with registration
