@@ -21,16 +21,29 @@ function generateSession(length = 64) {
 }
 
 function getSession(key) {
-    return sessions.find(s => s.key === key);
+    const s = sessions.find(s => s.key === key);
+    if(s.expires < Date.now()) {
+        sessions.splice(sessions.indexOf(s), 1);
+        return null;
+    }
+    return s;
 }
 
 function createSession(email, username, userId) {
+    // invalidate old sessions
+    sessions.forEach(s => {
+        if(s.email === email) {
+            sessions.splice(sessions.indexOf(s), 1);
+        }
+    });
+    
     const key = generateSession();
     sessions.push({
         key: key,
         email: email,
         username: username,
-        userId: userId
+        userId: userId,
+        expires: Date.now() + (1000 * 60 * 60 * 6) // 6 hours
     });
     return key;
 }
