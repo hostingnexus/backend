@@ -3,9 +3,9 @@ const {getPteroApp} = require("../shared");
 const bcrypt = require("bcrypt");
 
 async function signup(req, res) {
-    const {email, username, password} = req.body;
+    const {email, username, password, captchatoken} = req.body;
 
-    if(!email || !username || !password) {
+    if(!email || !username || !password || !captchatoken) {
         return res.status(400).json({
             success: false,
             error: "Invalid payload (missing data)"
@@ -35,7 +35,23 @@ async function signup(req, res) {
         });
     }
 
-
+    fetch("https://www.google.com/recaptcha/api/siteverify", {
+        method: "POST",
+        body: JSON.stringify({
+            secret: process.env.CAPTCHA_SECRET_KEY,
+            response: captchatoken
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    ).then(res => res.json()).then(json => {
+        if(!json.success) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid captcha token"
+            });
+        }
+    });
     // Do stuff
 
     try {
