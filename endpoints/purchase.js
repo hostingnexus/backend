@@ -6,7 +6,7 @@ async function purchase(req, res) {
         plan_id
     } = req.body;
 
-    const token = req.headers.authorization;
+    const token = req.headers.authorization || req.body.token; // Old version of the website used headers, keep support for both
     if(!token) {
         return res.status(401).json({
             error: "Unauthorized"
