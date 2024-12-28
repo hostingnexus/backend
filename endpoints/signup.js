@@ -43,8 +43,7 @@ async function signup(req, res) {
         }),
         headers: {
             "Content-Type": "application/json"
-        }
-    ).then(res => res.json()).then(json => {
+        }}).then(res => res.json()).then(json => {
         if(!json.success) {
             return res.status(400).json({
                 success: false,
