@@ -33,6 +33,7 @@ async function login(req, res) {
     }
 
     const key = createSession(email, user.username, user.id);
+    await db.query("UPDATE accounts SET last_logon = ? WHERE id = ?", [new Date(), user.id]);
     return res.status(200).json({
         success: true,
         session: key
