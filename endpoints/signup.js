@@ -39,7 +39,7 @@ async function signup(req, res) {
         method: "POST",
         body: new URLSearchParams({
             secret: process.env.CAPTCHA_SECRET_KEY,
-            response: token
+            response: captchatoken
         }),
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
