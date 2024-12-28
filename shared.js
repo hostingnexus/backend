@@ -22,6 +22,7 @@ function generateSession(length = 64) {
 
 function getSession(key) {
     const s = sessions.find(s => s.key === key);
+    if(!s) return null;
     if(s.expires < Date.now()) {
         sessions.splice(sessions.indexOf(s), 1);
         return null;
