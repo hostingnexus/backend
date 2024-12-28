@@ -35,22 +35,25 @@ async function signup(req, res) {
         });
     }
 
-    fetch("https://www.google.com/recaptcha/api/siteverify", {
+    const captchaResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
         method: "POST",
-        body: JSON.stringify({
+        body: new URLSearchParams({
             secret: process.env.CAPTCHA_SECRET_KEY,
-            response: captchatoken
+            response: token
         }),
         headers: {
-            "Content-Type": "application/json"
-        }}).then(res => res.json()).then(json => {
-        if(!json.success) {
-            return res.status(400).json({
-                success: false,
-                error: "Invalid captcha token"
-            });
+            "Content-Type": "application/x-www-form-urlencoded"
         }
     });
+    const captchaData = await captchaResponse.json();
+    if(!captchaData.success) {
+        return res.status(400).json({
+            success: false,
+            error: "Captcha verification failed"
+        });
+    }
+
+    
     // Do stuff
 
     try {
